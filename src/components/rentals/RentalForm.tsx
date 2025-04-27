@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,6 +48,7 @@ const RentalForm: React.FC<RentalFormProps> = ({ rental, isOpen, onClose }) => {
     notes: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     // Load available vehicles
@@ -126,48 +128,92 @@ const RentalForm: React.FC<RentalFormProps> = ({ rental, isOpen, onClose }) => {
     }
   }, [form.startDate, form.expectedEndDate, form.rentalRate]);
 
+  // Effect to set actualEndDate when status changes to completed
+  useEffect(() => {
+    if (form.status === "completed" && !form.actualEndDate) {
+      setForm(prev => ({
+        ...prev,
+        actualEndDate: format(new Date(), "yyyy-MM-dd")
+      }));
+    }
+  }, [form.status]);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
+    
+    // Clear validation error for this field if it exists
+    if (validationErrors[name]) {
+      setValidationErrors(prev => {
+        const newErrors = {...prev};
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
   };
 
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: Number(value) });
+    
+    // Clear validation error for this field if it exists
+    if (validationErrors[name]) {
+      setValidationErrors(prev => {
+        const newErrors = {...prev};
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
   };
 
   const handleSelectChange = (name: string, value: string) => {
-    if (name === "status" && value === "completed" && !form.actualEndDate) {
-      // If marking as completed and no actual end date is set, use today
-      const today = format(new Date(), "yyyy-MM-dd");
-      setForm({ 
-        ...form, 
-        [name]: value,
-        actualEndDate: today 
+    setForm({ ...form, [name]: value });
+    
+    // Clear validation error for this field if it exists
+    if (validationErrors[name]) {
+      setValidationErrors(prev => {
+        const newErrors = {...prev};
+        delete newErrors[name];
+        return newErrors;
       });
-    } else {
-      setForm({ ...form, [name]: value });
     }
+  };
+
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
+    
+    if (!form.vehicleId) errors.vehicleId = "Vehicle is required";
+    if (!form.customerName) errors.customerName = "Customer name is required";
+    if (!form.customerPhone) errors.customerPhone = "Phone number is required";
+    if (!form.startDate) errors.startDate = "Start date is required";
+    if (!form.expectedEndDate) errors.expectedEndDate = "Expected return date is required";
+    
+    // If status is completed, actual end date is required
+    if (form.status === "completed" && !form.actualEndDate) {
+      errors.actualEndDate = "Actual return date is required for completed rentals";
+    }
+    
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "Please fill in all required fields.",
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
 
     try {
-      // Validate required fields
-      if (!form.vehicleId || !form.customerName || !form.customerPhone || !form.startDate || !form.expectedEndDate) {
-        toast({
-          variant: "destructive",
-          title: "Validation Error",
-          description: "Please fill in all required fields.",
-        });
-        setIsSubmitting(false);
-        return;
-      }
-
       // Calculate final total amount for completed rentals
       let finalTotalAmount = form.totalAmount;
       if (form.status === "completed" && form.actualEndDate) {
@@ -185,11 +231,21 @@ const RentalForm: React.FC<RentalFormProps> = ({ rental, isOpen, onClose }) => {
           ...form,
           totalAmount: finalTotalAmount,
         });
+        
+        toast({
+          title: "Rental Updated",
+          description: `Rental for ${form.customerName} has been updated.`
+        });
       } else {
         // Add new rental
         addRental({
           ...form,
           totalAmount: finalTotalAmount,
+        });
+        
+        toast({
+          title: "Rental Added",
+          description: `New rental for ${form.customerName} has been created.`
         });
       }
 
@@ -213,6 +269,9 @@ const RentalForm: React.FC<RentalFormProps> = ({ rental, isOpen, onClose }) => {
           <DialogTitle>
             {rental ? "Edit Rental" : "Add New Rental"}
           </DialogTitle>
+          <DialogDescription>
+            {rental ? "Update rental details below" : "Enter rental information"}
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <div className="space-y-2">
@@ -222,7 +281,7 @@ const RentalForm: React.FC<RentalFormProps> = ({ rental, isOpen, onClose }) => {
               onValueChange={(value) => handleSelectChange("vehicleId", value)}
               disabled={rental !== null} // Can't change vehicle on edit
             >
-              <SelectTrigger id="vehicleId">
+              <SelectTrigger id="vehicleId" className={validationErrors.vehicleId ? "border-red-500" : ""}>
                 <SelectValue placeholder="Select a vehicle" />
               </SelectTrigger>
               <SelectContent>
@@ -233,12 +292,15 @@ const RentalForm: React.FC<RentalFormProps> = ({ rental, isOpen, onClose }) => {
                     </SelectItem>
                   ))
                 ) : (
-                  <SelectItem value="" disabled>
+                  <SelectItem value="no-vehicles" disabled>
                     No available vehicles
                   </SelectItem>
                 )}
               </SelectContent>
             </Select>
+            {validationErrors.vehicleId && (
+              <p className="text-xs text-red-500">{validationErrors.vehicleId}</p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -249,8 +311,11 @@ const RentalForm: React.FC<RentalFormProps> = ({ rental, isOpen, onClose }) => {
                 name="customerName"
                 value={form.customerName}
                 onChange={handleChange}
-                required
+                className={validationErrors.customerName ? "border-red-500" : ""}
               />
+              {validationErrors.customerName && (
+                <p className="text-xs text-red-500">{validationErrors.customerName}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="customerPhone">Phone Number *</Label>
@@ -259,8 +324,11 @@ const RentalForm: React.FC<RentalFormProps> = ({ rental, isOpen, onClose }) => {
                 name="customerPhone"
                 value={form.customerPhone}
                 onChange={handleChange}
-                required
+                className={validationErrors.customerPhone ? "border-red-500" : ""}
               />
+              {validationErrors.customerPhone && (
+                <p className="text-xs text-red-500">{validationErrors.customerPhone}</p>
+              )}
             </div>
           </div>
 
@@ -284,8 +352,11 @@ const RentalForm: React.FC<RentalFormProps> = ({ rental, isOpen, onClose }) => {
                 type="date"
                 value={form.startDate}
                 onChange={handleChange}
-                required
+                className={validationErrors.startDate ? "border-red-500" : ""}
               />
+              {validationErrors.startDate && (
+                <p className="text-xs text-red-500">{validationErrors.startDate}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="expectedEndDate">Expected Return Date *</Label>
@@ -295,12 +366,15 @@ const RentalForm: React.FC<RentalFormProps> = ({ rental, isOpen, onClose }) => {
                 type="date"
                 value={form.expectedEndDate}
                 onChange={handleChange}
-                required
+                className={validationErrors.expectedEndDate ? "border-red-500" : ""}
               />
+              {validationErrors.expectedEndDate && (
+                <p className="text-xs text-red-500">{validationErrors.expectedEndDate}</p>
+              )}
             </div>
           </div>
 
-          {(form.status === "completed" || rental?.status === "completed") && (
+          {(form.status === "completed") && (
             <div className="space-y-2">
               <Label htmlFor="actualEndDate">Actual Return Date *</Label>
               <Input
@@ -309,8 +383,11 @@ const RentalForm: React.FC<RentalFormProps> = ({ rental, isOpen, onClose }) => {
                 type="date"
                 value={form.actualEndDate}
                 onChange={handleChange}
-                required={form.status === "completed"}
+                className={validationErrors.actualEndDate ? "border-red-500" : ""}
               />
+              {validationErrors.actualEndDate && (
+                <p className="text-xs text-red-500">{validationErrors.actualEndDate}</p>
+              )}
             </div>
           )}
 
@@ -325,7 +402,6 @@ const RentalForm: React.FC<RentalFormProps> = ({ rental, isOpen, onClose }) => {
                 step="0.01"
                 value={form.rentalRate}
                 onChange={handleNumberChange}
-                required
               />
             </div>
             <div className="space-y-2">
@@ -369,7 +445,6 @@ const RentalForm: React.FC<RentalFormProps> = ({ rental, isOpen, onClose }) => {
               step="0.01"
               value={form.totalAmount}
               onChange={handleNumberChange}
-              disabled={form.status !== "completed"}
               className={form.status !== "completed" ? "bg-gray-100" : ""}
             />
             <p className="text-xs text-muted-foreground">
