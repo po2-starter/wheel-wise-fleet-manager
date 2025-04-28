@@ -40,8 +40,13 @@ const RentalsPage: React.FC = () => {
         </div>
         <RentalList onViewAgreement={setSelectedRental} />
 
-        <Dialog open={!!selectedRental} onOpenChange={() => setSelectedRental(null)}>
-          <DialogContent className="max-w-4xl">
+        <Dialog 
+          open={!!selectedRental} 
+          onOpenChange={(open) => {
+            if (!open) setSelectedRental(null);
+          }}
+        >
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             {selectedRental && <RentalAgreement rental={selectedRental} />}
           </DialogContent>
         </Dialog>

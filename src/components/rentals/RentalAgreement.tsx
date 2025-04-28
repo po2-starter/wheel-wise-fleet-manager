@@ -4,6 +4,7 @@ import { Rental } from "@/types";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { getVehicleById } from "@/utils/localStorage";
+import { DialogTitle } from "@/components/ui/dialog";
 
 interface RentalAgreementProps {
   rental: Rental;
@@ -33,29 +34,39 @@ const RentalAgreement: React.FC<RentalAgreementProps> = ({ rental }) => {
               left: 0;
               top: 0;
               width: 100%;
+              height: auto;
+              margin: 0;
+              padding: 15px;
+              page-break-after: always;
             }
             .no-print {
               display: none !important;
+            }
+            html, body {
+              height: 100%;
+              overflow: auto;
             }
           }
         `}
       </style>
 
+      <DialogTitle className="text-xl font-bold mb-4">Rental Agreement</DialogTitle>
+      
       <div className="flex justify-end mb-4">
         <Button onClick={handlePrint} className="no-print">
           Print Agreement
         </Button>
       </div>
 
-      <div id="rental-agreement" className="p-8 bg-white border rounded-lg">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold mb-2">SIRREV TRANSPORT SERVICES</h1>
-          <h2 className="text-xl font-semibold">Vehicle Rental Agreement</h2>
+      <div id="rental-agreement" className="p-6 bg-white border rounded-lg">
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-bold">SIRREV TRANSPORT SERVICES</h1>
+          <h2 className="text-xl font-semibold mt-2">Vehicle Rental Agreement</h2>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           <section>
-            <h3 className="text-lg font-semibold mb-3">Agreement Details</h3>
+            <h3 className="text-lg font-semibold mb-2">Agreement Details</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-600">Agreement Date</p>
@@ -69,7 +80,7 @@ const RentalAgreement: React.FC<RentalAgreementProps> = ({ rental }) => {
           </section>
 
           <section>
-            <h3 className="text-lg font-semibold mb-3">Vehicle Information</h3>
+            <h3 className="text-lg font-semibold mb-2">Vehicle Information</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-600">Vehicle</p>
@@ -83,7 +94,7 @@ const RentalAgreement: React.FC<RentalAgreementProps> = ({ rental }) => {
           </section>
 
           <section>
-            <h3 className="text-lg font-semibold mb-3">Rental Period</h3>
+            <h3 className="text-lg font-semibold mb-2">Rental Period</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-600">Start Date</p>
@@ -97,7 +108,7 @@ const RentalAgreement: React.FC<RentalAgreementProps> = ({ rental }) => {
           </section>
 
           <section>
-            <h3 className="text-lg font-semibold mb-3">Customer Information</h3>
+            <h3 className="text-lg font-semibold mb-2">Customer Information</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-600">Name</p>
@@ -117,7 +128,7 @@ const RentalAgreement: React.FC<RentalAgreementProps> = ({ rental }) => {
           </section>
 
           <section>
-            <h3 className="text-lg font-semibold mb-3">Payment Details</h3>
+            <h3 className="text-lg font-semibold mb-2">Payment Details</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-600">Daily Rate</p>
@@ -130,9 +141,9 @@ const RentalAgreement: React.FC<RentalAgreementProps> = ({ rental }) => {
             </div>
           </section>
 
-          <section className="mt-8">
+          <section className="mt-6 page-break-inside-avoid">
             <h3 className="text-lg font-semibold mb-3">Signatures</h3>
-            <div className="grid grid-cols-2 gap-8 mt-12">
+            <div className="grid grid-cols-2 gap-8 mt-8">
               <div>
                 <div className="border-t border-black pt-2">
                   <p className="text-sm text-gray-600">Customer Signature</p>
@@ -148,10 +159,12 @@ const RentalAgreement: React.FC<RentalAgreementProps> = ({ rental }) => {
             </div>
           </section>
 
-          <section className="mt-8 text-sm text-gray-600">
-            <p>Notes:</p>
-            <p>{rental.notes || "No additional notes"}</p>
-          </section>
+          {rental.notes && (
+            <section className="mt-6">
+              <h3 className="text-lg font-semibold mb-2">Notes</h3>
+              <p className="text-sm">{rental.notes}</p>
+            </section>
+          )}
         </div>
       </div>
     </div>
