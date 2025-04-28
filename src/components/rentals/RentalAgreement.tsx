@@ -1,0 +1,161 @@
+
+import React from "react";
+import { Rental } from "@/types";
+import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
+import { getVehicleById } from "@/utils/localStorage";
+
+interface RentalAgreementProps {
+  rental: Rental;
+}
+
+const RentalAgreement: React.FC<RentalAgreementProps> = ({ rental }) => {
+  const vehicle = getVehicleById(rental.vehicleId);
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  return (
+    <div>
+      {/* Print-only styles */}
+      <style>
+        {`
+          @media print {
+            body * {
+              visibility: hidden;
+            }
+            #rental-agreement, #rental-agreement * {
+              visibility: visible;
+            }
+            #rental-agreement {
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
+            }
+            .no-print {
+              display: none !important;
+            }
+          }
+        `}
+      </style>
+
+      <div className="flex justify-end mb-4">
+        <Button onClick={handlePrint} className="no-print">
+          Print Agreement
+        </Button>
+      </div>
+
+      <div id="rental-agreement" className="p-8 bg-white border rounded-lg">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold mb-2">SIRREV TRANSPORT SERVICES</h1>
+          <h2 className="text-xl font-semibold">Vehicle Rental Agreement</h2>
+        </div>
+
+        <div className="space-y-6">
+          <section>
+            <h3 className="text-lg font-semibold mb-3">Agreement Details</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-600">Agreement Date</p>
+                <p className="font-medium">{format(new Date(rental.dateCreated), "PPP")}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Agreement ID</p>
+                <p className="font-medium">{rental.id}</p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h3 className="text-lg font-semibold mb-3">Vehicle Information</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-600">Vehicle</p>
+                <p className="font-medium">{vehicle?.make} {vehicle?.model} ({vehicle?.year})</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">License Plate</p>
+                <p className="font-medium">{vehicle?.licensePlate}</p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h3 className="text-lg font-semibold mb-3">Rental Period</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-600">Start Date</p>
+                <p className="font-medium">{format(new Date(rental.startDate), "PPP")}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Expected Return Date</p>
+                <p className="font-medium">{format(new Date(rental.expectedEndDate), "PPP")}</p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h3 className="text-lg font-semibold mb-3">Customer Information</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-600">Name</p>
+                <p className="font-medium">{rental.customerName}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Phone</p>
+                <p className="font-medium">{rental.customerPhone}</p>
+              </div>
+              {rental.customerEmail && (
+                <div className="col-span-2">
+                  <p className="text-sm text-gray-600">Email</p>
+                  <p className="font-medium">{rental.customerEmail}</p>
+                </div>
+              )}
+            </div>
+          </section>
+
+          <section>
+            <h3 className="text-lg font-semibold mb-3">Payment Details</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-600">Daily Rate</p>
+                <p className="font-medium">₵{rental.rentalRate.toFixed(2)}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Deposit</p>
+                <p className="font-medium">₵{rental.deposit.toFixed(2)}</p>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-8">
+            <h3 className="text-lg font-semibold mb-3">Signatures</h3>
+            <div className="grid grid-cols-2 gap-8 mt-12">
+              <div>
+                <div className="border-t border-black pt-2">
+                  <p className="text-sm text-gray-600">Customer Signature</p>
+                  <p className="text-sm text-gray-600">{rental.customerName}</p>
+                </div>
+              </div>
+              <div>
+                <div className="border-t border-black pt-2">
+                  <p className="text-sm text-gray-600">SIRREV TRANSPORT SERVICES Representative</p>
+                  <p className="text-sm text-gray-600">Authorized Signature</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-8 text-sm text-gray-600">
+            <p>Notes:</p>
+            <p>{rental.notes || "No additional notes"}</p>
+          </section>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default RentalAgreement;

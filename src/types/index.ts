@@ -1,4 +1,3 @@
-
 // Vehicle related types
 export type VehicleStatus = "available" | "rented" | "maintenance" | "unavailable";
 

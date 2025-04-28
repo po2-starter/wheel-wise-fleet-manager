@@ -1,10 +1,13 @@
-
-import React from "react";
+import React, { useState } from "react";
 import Layout from "../components/Layout";
 import RentalList from "../components/rentals/RentalList";
+import RentalAgreement from "../components/rentals/RentalAgreement";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { getRentals } from "@/utils/localStorage";
+import { Rental } from "@/types";
 
 const RentalsPage: React.FC = () => {
+  const [selectedRental, setSelectedRental] = useState<Rental | null>(null);
   const rentals = getRentals();
   const activeRentals = rentals.filter(r => r.status === "active").length;
   const overdueRentals = rentals.filter(r => r.status === "overdue").length;
@@ -34,7 +37,13 @@ const RentalsPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <RentalList />
+        <RentalList onViewAgreement={setSelectedRental} />
+
+        <Dialog open={!!selectedRental} onOpenChange={() => setSelectedRental(null)}>
+          <DialogContent className="max-w-4xl">
+            {selectedRental && <RentalAgreement rental={selectedRental} />}
+          </DialogContent>
+        </Dialog>
       </div>
     </Layout>
   );
