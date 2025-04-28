@@ -1,5 +1,4 @@
-
-import { Vehicle, Rental, Maintenance, Expenditure } from '../types';
+import { Vehicle, Rental, Maintenance, Expenditure, DashboardStats } from '../types';
 import { toast } from '@/components/ui/use-toast';
 
 // Storage keys
