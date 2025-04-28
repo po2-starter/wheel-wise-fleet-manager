@@ -184,7 +184,9 @@ const RentalForm: React.FC<RentalFormProps> = ({ rental, isOpen, onClose }) => {
   const validateForm = () => {
     const errors: Record<string, string> = {};
     
-    if (!form.vehicleId) errors.vehicleId = "Vehicle is required";
+    // For new rentals, vehicle is required. For editing, the vehicle is already set.
+    if (!rental && !form.vehicleId) errors.vehicleId = "Vehicle is required";
+    
     if (!form.customerName) errors.customerName = "Customer name is required";
     if (!form.customerPhone) errors.customerPhone = "Phone number is required";
     if (!form.startDate) errors.startDate = "Start date is required";
@@ -275,7 +277,7 @@ const RentalForm: React.FC<RentalFormProps> = ({ rental, isOpen, onClose }) => {
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="vehicleId">Vehicle *</Label>
+            <Label htmlFor="vehicleId">Vehicle {!rental && '*'}</Label>
             <Select
               value={form.vehicleId}
               onValueChange={(value) => handleSelectChange("vehicleId", value)}
