@@ -33,7 +33,11 @@ import { toast } from "@/components/ui/use-toast";
 import RentalForm from "./RentalForm";
 import { format } from "date-fns";
 
-const RentalList: React.FC = () => {
+interface RentalListProps {
+  onViewAgreement?: (rental: Rental) => void;
+}
+
+const RentalList: React.FC<RentalListProps> = ({ onViewAgreement }) => {
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -192,6 +196,11 @@ const RentalList: React.FC = () => {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                          {onViewAgreement && (
+                            <DropdownMenuItem onClick={() => onViewAgreement(rental)}>
+                              <Calendar className="mr-2 h-4 w-4" /> View Agreement
+                            </DropdownMenuItem>
+                          )}
                           <DropdownMenuItem onClick={() => handleEditClick(rental)}>
                             <Edit className="mr-2 h-4 w-4" /> Edit
                           </DropdownMenuItem>
