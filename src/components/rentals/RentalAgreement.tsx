@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { getVehicleById } from "@/utils/localStorage";
 import { DialogTitle } from "@/components/ui/dialog";
+import { ExportButton } from "@/components/ui/export-button";
+import { exportRentalAgreement } from "@/utils/exportUtils";
 
 interface RentalAgreementProps {
   rental: Rental;
@@ -15,6 +17,10 @@ const RentalAgreement: React.FC<RentalAgreementProps> = ({ rental }) => {
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleExport = (format: "pdf" | "csv" | "word") => {
+    exportRentalAgreement(rental, format);
   };
 
   return (
@@ -63,10 +69,11 @@ const RentalAgreement: React.FC<RentalAgreementProps> = ({ rental }) => {
 
       <DialogTitle className="text-xl font-bold mb-4 no-print">Rental Agreement</DialogTitle>
       
-      <div className="flex justify-end mb-4 no-print">
+      <div className="flex justify-end mb-4 no-print gap-2">
         <Button onClick={handlePrint}>
           Print Agreement
         </Button>
+        <ExportButton onExport={handleExport} label="Export" />
       </div>
 
       <div id="rental-agreement" className="p-6 bg-white border rounded-lg">

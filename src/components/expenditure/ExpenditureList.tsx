@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { getExpenditures, deleteExpenditure } from "@/utils/localStorage";
 import { Expenditure } from "@/types";
@@ -32,6 +31,8 @@ import { CircleDollarSign, Search, MoreHorizontal, Plus, Trash, Edit } from "luc
 import { toast } from "@/components/ui/use-toast";
 import ExpenditureForm from "./ExpenditureForm";
 import { format } from "date-fns";
+import { ExportButton } from "@/components/ui/export-button"; 
+import { exportExpendituresList } from "@/utils/exportUtils";
 
 const ExpenditureList: React.FC = () => {
   const [expenditures, setExpenditures] = useState<Expenditure[]>([]);
@@ -147,6 +148,10 @@ const ExpenditureList: React.FC = () => {
   // Calculate total expenditure
   const totalExpenditure = filteredExpenditures.reduce((sum, exp) => sum + exp.amount, 0);
 
+  const handleExport = (format: "pdf" | "csv" | "word") => {
+    exportExpendituresList(filteredExpenditures, format);
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -160,9 +165,12 @@ const ExpenditureList: React.FC = () => {
             onChange={handleSearchChange}
           />
         </div>
-        <Button onClick={handleAddClick} className="w-full sm:w-auto">
-          <Plus className="mr-2 h-4 w-4" /> Add Expenditure
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <ExportButton onExport={handleExport} />
+          <Button onClick={handleAddClick} className="w-full sm:w-auto">
+            <Plus className="mr-2 h-4 w-4" /> Add Expenditure
+          </Button>
+        </div>
       </div>
 
       {/* Summary Card */}

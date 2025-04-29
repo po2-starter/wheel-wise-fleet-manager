@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { getRentals, deleteRental } from "@/utils/localStorage";
 import { Rental } from "@/types";
@@ -32,6 +31,8 @@ import { Calendar, Search, MoreHorizontal, Plus, Trash, Edit, CheckCircle } from
 import { toast } from "@/components/ui/use-toast";
 import RentalForm from "./RentalForm";
 import { format } from "date-fns";
+import { ExportButton } from "@/components/ui/export-button";
+import { exportRentalsList } from "@/utils/exportUtils";
 
 interface RentalListProps {
   onViewAgreement?: (rental: Rental) => void;
@@ -127,6 +128,10 @@ const RentalList: React.FC<RentalListProps> = ({ onViewAgreement }) => {
     }
   };
 
+  const handleExport = (format: "pdf" | "csv" | "word") => {
+    exportRentalsList(filteredRentals, format);
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -140,9 +145,12 @@ const RentalList: React.FC<RentalListProps> = ({ onViewAgreement }) => {
             onChange={handleSearchChange}
           />
         </div>
-        <Button onClick={handleAddClick} className="w-full sm:w-auto">
-          <Plus className="mr-2 h-4 w-4" /> Add Rental
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <ExportButton onExport={handleExport} />
+          <Button onClick={handleAddClick} className="w-full sm:w-auto">
+            <Plus className="mr-2 h-4 w-4" /> Add Rental
+          </Button>
+        </div>
       </div>
 
       {rentals.length === 0 ? (
