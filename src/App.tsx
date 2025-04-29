@@ -10,6 +10,8 @@ import RentalsPage from "./pages/Rentals";
 import MaintenancePage from "./pages/Maintenance";
 import ExpenditurePage from "./pages/Expenditure";
 import NotFound from "./pages/NotFound";
+import LoginPage from "./pages/Login";
+import AuthGuard from "./components/AuthGuard";
 
 const queryClient = new QueryClient();
 
@@ -20,11 +22,33 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/vehicles" element={<VehiclesPage />} />
-          <Route path="/rentals" element={<RentalsPage />} />
-          <Route path="/maintenance" element={<MaintenancePage />} />
-          <Route path="/expenditure" element={<ExpenditurePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          
+          <Route path="/" element={
+            <AuthGuard>
+              <Index />
+            </AuthGuard>
+          } />
+          <Route path="/vehicles" element={
+            <AuthGuard>
+              <VehiclesPage />
+            </AuthGuard>
+          } />
+          <Route path="/rentals" element={
+            <AuthGuard>
+              <RentalsPage />
+            </AuthGuard>
+          } />
+          <Route path="/maintenance" element={
+            <AuthGuard>
+              <MaintenancePage />
+            </AuthGuard>
+          } />
+          <Route path="/expenditure" element={
+            <AuthGuard>
+              <ExpenditurePage />
+            </AuthGuard>
+          } />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   Car,
   Calendar,
@@ -9,16 +9,20 @@ import {
   CircleDollarSign,
   Gauge,
   Menu,
-  X
+  X,
+  LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useToast } from "@/hooks/use-toast";
 import Footer from "./Footer";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const navLinks = [
     {
@@ -54,6 +58,20 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const handleLogout = () => {
+    // Remove the login token
+    localStorage.removeItem("isLoggedIn");
+    
+    // Show toast notification
+    toast({
+      title: "Logged out successfully",
+      description: "You have been logged out of the system."
+    });
+    
+    // Redirect to login page
+    navigate("/login");
   };
 
   return (
@@ -118,6 +136,13 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <div className="h-8 w-8 rounded-full bg-fleet-primary text-white flex items-center justify-center">
                   A
                 </div>
+                <button 
+                  onClick={handleLogout}
+                  className="p-2 rounded-md hover:bg-gray-100 flex items-center gap-1 text-sm text-gray-600"
+                >
+                  <LogOut className="h-4 w-4" /> 
+                  <span className="hidden sm:inline">Logout</span>
+                </button>
               </div>
             </div>
           </header>
