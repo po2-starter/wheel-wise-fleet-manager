@@ -20,52 +20,60 @@ const RentalAgreement: React.FC<RentalAgreementProps> = ({ rental }) => {
   return (
     <div>
       {/* Print-only styles */}
-      <style>
-        {`
-          @media print {
-            body * {
-              visibility: hidden;
-            }
-            #rental-agreement, #rental-agreement * {
-              visibility: visible;
-            }
-            #rental-agreement {
-              position: absolute;
-              left: 0;
-              top: 0;
-              width: 100%;
-              height: auto;
-              margin: 0;
-              padding: 15px;
-              page-break-after: always;
-            }
-            .no-print {
-              display: none !important;
-            }
-            html, body {
-              height: 100%;
-              overflow: auto;
-            }
+      <style jsx global>{`
+        @media print {
+          @page {
+            size: A4;
+            margin: 20mm;
           }
-        `}
-      </style>
+          
+          body * {
+            visibility: hidden;
+          }
+          
+          #rental-agreement, 
+          #rental-agreement * {
+            visibility: visible;
+          }
+          
+          #rental-agreement {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            padding: 20px;
+            margin: 0;
+            background-color: white !important;
+            color: black !important;
+            font-size: 12pt;
+          }
 
-      <DialogTitle className="text-xl font-bold mb-4">Rental Agreement</DialogTitle>
+          .page-break-inside-avoid {
+            page-break-inside: avoid;
+          }
+          
+          .no-print {
+            display: none !important;
+          }
+        }
+      `}</style>
+
+      <DialogTitle className="text-xl font-bold mb-4 no-print">Rental Agreement</DialogTitle>
       
-      <div className="flex justify-end mb-4">
-        <Button onClick={handlePrint} className="no-print">
+      <div className="flex justify-end mb-4 no-print">
+        <Button onClick={handlePrint}>
           Print Agreement
         </Button>
       </div>
 
       <div id="rental-agreement" className="p-6 bg-white border rounded-lg">
-        <div className="text-center mb-6">
+        <div className="text-center mb-6 page-break-inside-avoid">
           <h1 className="text-2xl font-bold">SIRREV TRANSPORT SERVICES</h1>
           <h2 className="text-xl font-semibold mt-2">Vehicle Rental Agreement</h2>
         </div>
 
-        <div className="space-y-4">
-          <section>
+        <div className="space-y-6">
+          <section className="page-break-inside-avoid">
             <h3 className="text-lg font-semibold mb-2">Agreement Details</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -79,7 +87,7 @@ const RentalAgreement: React.FC<RentalAgreementProps> = ({ rental }) => {
             </div>
           </section>
 
-          <section>
+          <section className="page-break-inside-avoid">
             <h3 className="text-lg font-semibold mb-2">Vehicle Information</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -93,7 +101,7 @@ const RentalAgreement: React.FC<RentalAgreementProps> = ({ rental }) => {
             </div>
           </section>
 
-          <section>
+          <section className="page-break-inside-avoid">
             <h3 className="text-lg font-semibold mb-2">Rental Period</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -107,7 +115,7 @@ const RentalAgreement: React.FC<RentalAgreementProps> = ({ rental }) => {
             </div>
           </section>
 
-          <section>
+          <section className="page-break-inside-avoid">
             <h3 className="text-lg font-semibold mb-2">Customer Information</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -127,7 +135,7 @@ const RentalAgreement: React.FC<RentalAgreementProps> = ({ rental }) => {
             </div>
           </section>
 
-          <section>
+          <section className="page-break-inside-avoid">
             <h3 className="text-lg font-semibold mb-2">Payment Details</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -160,7 +168,7 @@ const RentalAgreement: React.FC<RentalAgreementProps> = ({ rental }) => {
           </section>
 
           {rental.notes && (
-            <section className="mt-6">
+            <section className="mt-6 page-break-inside-avoid">
               <h3 className="text-lg font-semibold mb-2">Notes</h3>
               <p className="text-sm">{rental.notes}</p>
             </section>
