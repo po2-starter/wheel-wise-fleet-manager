@@ -20,7 +20,7 @@ const RentalAgreement: React.FC<RentalAgreementProps> = ({ rental }) => {
   return (
     <div>
       {/* Print-only styles */}
-      <style jsx global>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         @media print {
           @page {
             size: A4;
@@ -56,7 +56,7 @@ const RentalAgreement: React.FC<RentalAgreementProps> = ({ rental }) => {
             display: none !important;
           }
         }
-      `}</style>
+      `}} />
 
       <DialogTitle className="text-xl font-bold mb-4 no-print">Rental Agreement</DialogTitle>
       
