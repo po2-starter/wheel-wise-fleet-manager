@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "./button";
-import { FileText, FilePdf, FileWord, FileCsv } from "lucide-react";
+import { FileText, FileDown, File, FileType } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,17 +24,17 @@ const exportOptions: ExportOption[] = [
   {
     label: "PDF",
     format: "pdf",
-    icon: <FilePdf className="mr-2 h-4 w-4" />,
+    icon: <FileText className="mr-2 h-4 w-4" />,
   },
   {
     label: "CSV",
     format: "csv",
-    icon: <FileCsv className="mr-2 h-4 w-4" />,
+    icon: <FileType className="mr-2 h-4 w-4" />,
   },
   {
     label: "Word",
     format: "word",
-    icon: <FileWord className="mr-2 h-4 w-4" />,
+    icon: <File className="mr-2 h-4 w-4" />,
   },
 ];
 
@@ -46,7 +46,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline">
-          <FileText className="mr-2 h-4 w-4" />
+          <FileDown className="mr-2 h-4 w-4" />
           {label}
         </Button>
       </DropdownMenuTrigger>
