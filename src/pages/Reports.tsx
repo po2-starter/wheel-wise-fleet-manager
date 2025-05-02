@@ -34,9 +34,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const ReportsPage: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
-  const [vehicleFilter, setVehicleFilter] = useState<string>("");
+  const [vehicleFilter, setVehicleFilter] = useState<string>("all-vehicles");
   const [customerFilter, setCustomerFilter] = useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("all-statuses");
 
   // Get rentals and vehicles
   const allRentals = getRentals();
@@ -55,17 +55,17 @@ const ReportsPage: React.FC = () => {
     });
     
     // Apply additional filters
-    const matchesVehicle = vehicleFilter 
-      ? rental.vehicleId === vehicleFilter 
-      : true;
+    const matchesVehicle = vehicleFilter === "all-vehicles" 
+      ? true 
+      : rental.vehicleId === vehicleFilter;
       
     const matchesCustomer = customerFilter 
       ? rental.customerName.toLowerCase().includes(customerFilter.toLowerCase())
       : true;
       
-    const matchesStatus = statusFilter 
-      ? rental.status === statusFilter 
-      : true;
+    const matchesStatus = statusFilter === "all-statuses" 
+      ? true 
+      : rental.status === statusFilter;
     
     return inSelectedMonth && matchesVehicle && matchesCustomer && matchesStatus;
   });
@@ -267,6 +267,12 @@ const ReportsPage: React.FC = () => {
           <div className="p-4 text-center print-only hidden">
             <h1 className="text-xl font-bold">SIRREV TRANSPORT SERVICES</h1>
             <h2 className="text-lg">Rental Report - {format(selectedMonth, "MMMM yyyy")}</h2>
+            {vehicleFilter !== "all-vehicles" && (
+              <p className="text-md">Vehicle: {getVehicleName(vehicleFilter)}</p>
+            )}
+            {statusFilter !== "all-statuses" && (
+              <p className="text-md">Status: {statusFilter.charAt(0).toUpperCase() + statusFilter.slice(1)}</p>
+            )}
           </div>
           
           {filteredRentals.length === 0 ? (
@@ -350,6 +356,7 @@ const ReportsPage: React.FC = () => {
                 </div>
                 <div className="text-right">
                   <p><strong>Total Revenue:</strong> ₵{totalRevenue.toFixed(2)}</p>
+                  <p className="text-sm text-muted-foreground">Generated on {format(new Date(), "MMMM d, yyyy")}</p>
                 </div>
               </div>
             </div>
@@ -361,3 +368,4 @@ const ReportsPage: React.FC = () => {
 };
 
 export default ReportsPage;
+
