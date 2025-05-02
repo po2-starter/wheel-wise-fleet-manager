@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { addExpenditure, updateExpenditure, getVehicles } from "@/utils/localStorage";
 import { Expenditure, Vehicle } from "@/types";
@@ -154,7 +153,7 @@ const ExpenditureForm: React.FC<ExpenditureFormProps> = ({ expenditure, isOpen, 
                 <SelectValue placeholder="Select a vehicle (optional)" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">General Expense (No vehicle)</SelectItem>
+                <SelectItem value="none">General Expense (No vehicle)</SelectItem>
                 {vehicles.length > 0 ? (
                   vehicles.map((vehicle) => (
                     <SelectItem key={vehicle.id} value={vehicle.id}>
@@ -162,7 +161,7 @@ const ExpenditureForm: React.FC<ExpenditureFormProps> = ({ expenditure, isOpen, 
                     </SelectItem>
                   ))
                 ) : (
-                  <SelectItem value="" disabled>
+                  <SelectItem value="no-vehicles" disabled>
                     No vehicles available
                   </SelectItem>
                 )}

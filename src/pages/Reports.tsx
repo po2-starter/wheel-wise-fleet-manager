@@ -174,7 +174,7 @@ const ReportsPage: React.FC = () => {
                     <SelectValue placeholder="All vehicles" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All vehicles</SelectItem>
+                    <SelectItem value="all-vehicles">All vehicles</SelectItem>
                     {vehicles.map(vehicle => (
                       <SelectItem key={vehicle.id} value={vehicle.id}>
                         {vehicle.make} {vehicle.model} ({vehicle.licensePlate})
@@ -206,7 +206,7 @@ const ReportsPage: React.FC = () => {
                     <SelectValue placeholder="All statuses" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All statuses</SelectItem>
+                    <SelectItem value="all-statuses">All statuses</SelectItem>
                     <SelectItem value="active">Active</SelectItem>
                     <SelectItem value="completed">Completed</SelectItem>
                     <SelectItem value="overdue">Overdue</SelectItem>

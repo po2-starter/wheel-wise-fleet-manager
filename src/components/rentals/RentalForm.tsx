@@ -73,7 +73,7 @@ const RentalForm: React.FC<RentalFormProps> = ({ rental, isOpen, onClose }) => {
                     </SelectItem>
                   ))
                 ) : (
-                  <SelectItem value="no-vehicles" disabled>
+                  <SelectItem value="no-vehicles-available" disabled>
                     No available vehicles
                   </SelectItem>
                 )}
