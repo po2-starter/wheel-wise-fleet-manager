@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
@@ -10,7 +11,8 @@ import {
   Gauge,
   Menu,
   X,
-  LogOut
+  LogOut,
+  FileText
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -49,6 +51,11 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       name: "Expenditure",
       path: "/expenditure",
       icon: <CircleDollarSign className="h-5 w-5" />,
+    },
+    {
+      name: "Reports",
+      path: "/reports",
+      icon: <FileText className="h-5 w-5" />,
     },
   ];
 

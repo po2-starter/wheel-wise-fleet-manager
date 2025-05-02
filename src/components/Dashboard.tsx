@@ -1,9 +1,10 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { initializeData, getDashboardStats } from "@/utils/localStorage";
 import { DashboardStats, Vehicle, Rental, Expenditure } from "@/types";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import {
   BarChart,
   Calendar,
@@ -13,6 +14,7 @@ import {
   TrendingUp,
   TrendingDown,
   Gauge,
+  FileText
 } from "lucide-react";
 import { ResponsiveContainer, PieChart, Pie, Cell, BarChart as RechartsBarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 
@@ -95,14 +97,21 @@ const Dashboard: React.FC = () => {
     <div className="space-y-6 animate-fade-in">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Dashboard Overview</h1>
-        <p className="text-sm text-muted-foreground">
-          {new Date().toLocaleDateString("en-GB", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </p>
+        <div className="flex items-center gap-3">
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/reports">
+              <FileText className="mr-2 h-4 w-4" /> View Reports
+            </Link>
+          </Button>
+          <p className="text-sm text-muted-foreground">
+            {new Date().toLocaleDateString("en-GB", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+        </div>
       </div>
 
       {/* Key Metrics */}
