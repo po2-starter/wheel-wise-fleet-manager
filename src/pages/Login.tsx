@@ -19,8 +19,8 @@ const LoginPage: React.FC = () => {
     setIsLoading(true);
 
     // Hardcoded credentials (in a real app, this would be server-side)
-    const validUsername = "SIRREV";
-    const validPassword = "TRANSPORT";
+    const validUsername = "admin";
+    const validPassword = "password123";
 
     setTimeout(() => {
       if (username === validUsername && password === validPassword) {

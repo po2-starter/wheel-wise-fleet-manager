@@ -9,6 +9,7 @@ import VehiclesPage from "./pages/Vehicles";
 import RentalsPage from "./pages/Rentals";
 import MaintenancePage from "./pages/Maintenance";
 import ExpenditurePage from "./pages/Expenditure";
+import ReportsPage from "./pages/Reports";
 import NotFound from "./pages/NotFound";
 import LoginPage from "./pages/Login";
 import AuthGuard from "./components/AuthGuard";
@@ -47,6 +48,11 @@ const App = () => (
           <Route path="/expenditure" element={
             <AuthGuard>
               <ExpenditurePage />
+            </AuthGuard>
+          } />
+          <Route path="/reports" element={
+            <AuthGuard>
+              <ReportsPage />
             </AuthGuard>
           } />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
